@@ -1,16 +1,18 @@
 <template>
-  <hello-world />
+  <div>
+    <p>
+      Bienvenue sur le cloud
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
-  import HelloWorld from '../components/HelloWorld.vue'
+import Vue from 'vue';
+import Component from "vue-class-component";
+@Component({
+  name: 'Home',
+})
+export default class Documents extends Vue {
 
-  export default Vue.extend({
-    name: 'Home',
-
-    components: {
-      HelloWorld,
-    },
-  })
+}
 </script>

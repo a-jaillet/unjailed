@@ -53,7 +53,7 @@ export class DocumentController {
     }
 
     @Post('upload')
-    @UseInterceptors(FilesInterceptor('file', 10))
+    @UseInterceptors(FilesInterceptor('file', 50))
     async uploadFile(@UploadedFiles() files: Express.Multer.File[]): Promise<Document[]> {
         return await this.documentService.bulkAddFiles(files);
     }

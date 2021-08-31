@@ -1,5 +1,6 @@
 <template>
   <div>
+  <input-widget v-on:valueChanged="filterDocuments"/>
   <div class="document-list">
         <v-card class="doc-card"
             color="indigo darken-4"
@@ -78,20 +79,26 @@ import documentService from "../../services/document-service";
 import { Document } from "../../entities/document.entity";
 import AddDocumentDialog from './AddDocumentDialog.vue';
 import DocumentDetails from './DocumentDetails.vue';
+import InputWidget from '../shared/InputWidget.vue';
+import { multiWordFilter } from '../../services/word-service';
 
 @Component({
   name: 'DocumentsList',
   components: {
     AddDocumentDialog,
-    DocumentDetails
+    DocumentDetails,
+    InputWidget
   }
 })
 export default class DocumentsList extends Vue {
 
+    public allDocuments: Document [] = [];
     public documents: Document [] = [];
     public addDialog = false;
     public editDialog = false;
     public currentDocument: Document | null = null;
+
+    public filterWord: string | null = null;
 
     public mounted(): void {
         this.setAllDocuments();
@@ -100,14 +107,16 @@ export default class DocumentsList extends Vue {
     public async setAllDocuments(): Promise<void> {
         const docs = await documentService.findAllDocuments();
         if (docs) {
-            this.documents = docs;
+            this.allDocuments = docs;
+            this.setUpDocuments();
         }
     }
 
     // eslint-disable-next-line 
     public closeAddDialog (res?: any): void {
         if (res?.addedDocs) {
-            this.documents.unshift(...res.addedDocs);
+            this.allDocuments.unshift(...res.addedDocs);
+            this.setUpDocuments();
         }         
         this.addDialog = false;
     }
@@ -140,12 +149,26 @@ export default class DocumentsList extends Vue {
     public closeEditDialog (res?:  string): void {  
         documentService.setCurrentDocument(null);
         if (res) {
-            this.documents = this.documents.filter((doc) => doc.id !== res);
+            this.allDocuments = this.allDocuments.filter((doc) => doc.id !== res);
+            this.setUpDocuments();
         }
         this.editDialog = false;
     }
 
+    public filterDocuments(res: { value: string}): void {
+        if (!res || ! res.value) this.filterWord = null;
+        else this.filterWord = res.value;
+        this.setUpDocuments();
+    }
 
+    private setUpDocuments(): void {
+        if (this.filterWord === null || this.filterWord === '') {
+            this.documents = [...this.allDocuments];
+        }
+        else {
+            this.documents = this.allDocuments.filter((doc) => multiWordFilter(this.filterWord.split(' '), doc.originalName.split(' ')));
+        }
+    }
 }
 </script>
 
