@@ -14,8 +14,7 @@ export class DocumentController {
         private readonly documentStorageService: DocumentStorageService,
     ) { }
 
-    @Public()
-    @Get()
+   @Get()
     public async findAll (): Promise<Document[]> {
         return await this.documentService.findAll();
     }

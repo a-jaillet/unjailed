@@ -16,6 +16,11 @@ const router = new Router({
       name: 'documents',
       component: () => import(/* webpackChunkName: "search" */ '../views/Documents.vue')
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "search" */ '../views/Login.vue')
+    },
   ]
 })
 

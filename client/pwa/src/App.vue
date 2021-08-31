@@ -4,10 +4,8 @@
         color="warn"
         dark
     >
-
-      <div>Claude</div>
       <v-spacer></v-spacer>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="loginLogout"></v-app-bar-nav-icon>
 
       <template v-slot:extension>
         <v-tabs
@@ -26,14 +24,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Component from "vue-class-component";
+import authService from './services/auth-service';
 
-export default Vue.extend({
+@Component({
   name: 'App',
+})
+export default class App extends Vue {
 
-  data: () => ({
-    //
-  }),
-});
+  public user: any = null;
+
+  constructor () {
+    super();
+    authService.userSubject.subscribe((user) => {
+      this.user = user;
+    });
+  }
+
+  public loginLogout () {
+    authService.logout();
+  }
+}
 </script>
 
 <style scoped>
