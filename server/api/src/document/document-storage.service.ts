@@ -11,4 +11,9 @@ export class DocumentStorageService {
         return await fsPromise.readFile(`files/${filename}`);
     }
 
+    public async removeFile(filename: string): Promise<void> {
+        return await fsPromise.unlink(`files/${filename}`);
+    }
+
+
 }

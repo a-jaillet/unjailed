@@ -34,4 +34,9 @@ export class Document {
         const file = await this.getPreview();
         return window.URL.createObjectURL(file);
     }
+
+    public async changeFilename(name: string): Promise<void> {
+      const res = await axios.patch(`${config.apiUrl}/${this.apiName}/${this.id}/filename/${name}`);
+      this.originalName = res.data.originalName;
+    }
 }

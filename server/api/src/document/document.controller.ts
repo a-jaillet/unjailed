@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { Document } from './document.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -47,12 +47,19 @@ export class DocumentController {
       readStream.end();
     }
 
+    @Patch(':id/filename/:name')
+    async editFilename(@Param('id') id: string, @Param('name') name: string): Promise<Document> {
+      return await this.documentService.editFilename(id, name);
+    }
+
     @Post('upload')
     @UseInterceptors(FilesInterceptor('file', 10))
     async uploadFile(@UploadedFiles() files: Express.Multer.File[]): Promise<Document[]> {
         return await this.documentService.bulkAddFiles(files);
     }
-    // public async addOne ( @Body() doc: File): Promise<Document> {
-    //     return await this.documentService.addOne(doc);
-    // }
+    
+    @Delete(':id')
+    async remove(@Param('id') id: string): Promise<Document> {
+      return await this.documentService.deleteADocument(id);
+    }
 }

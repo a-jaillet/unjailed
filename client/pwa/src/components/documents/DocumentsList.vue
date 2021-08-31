@@ -24,20 +24,30 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                icon
                 color="primary"
+                icon
+                @click="openEditDialog(doc)"
                 >
                     <v-icon dark>
                         mdi-dots-vertical
                     </v-icon>
-                </v-btn>
+            </v-btn>
             </v-card-actions>
         </v-card>
   </div>
 
-  <v-dialog
-      width="500"
-      v-model="dialog"
+    <v-dialog
+        width="500"
+        v-model="editDialog"
+    >
+        <document-details
+        ref="documentDetails"
+         v-on:close-dialog="closeEditDialog"/>
+    </v-dialog>
+
+    <v-dialog
+        width="500"
+        v-model="addDialog"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -55,7 +65,8 @@
       </v-btn>
       </template>
 
-      <add-document-dialog v-on:close-dialog="closeDialog"/>
+      <add-document-dialog
+       v-on:close-dialog="closeAddDialog"/>
     </v-dialog>
   </div>
 </template>
@@ -64,19 +75,23 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import documentService from "../../services/document-service";
-import { Document } from "../../entites/document.entity";
+import { Document } from "../../entities/document.entity";
 import AddDocumentDialog from './AddDocumentDialog.vue';
+import DocumentDetails from './DocumentDetails.vue';
 
 @Component({
   name: 'DocumentsList',
   components: {
-    AddDocumentDialog
+    AddDocumentDialog,
+    DocumentDetails
   }
 })
 export default class DocumentsList extends Vue {
 
     public documents: Document [] = [];
-    public dialog = false;
+    public addDialog = false;
+    public editDialog = false;
+    public currentDocument: Document | null = null;
 
     public mounted(): void {
         this.setAllDocuments();
@@ -90,11 +105,11 @@ export default class DocumentsList extends Vue {
     }
 
     // eslint-disable-next-line 
-    public closeDialog (res?: any): void {
+    public closeAddDialog (res?: any): void {
         if (res?.addedDocs) {
             this.documents.unshift(...res.addedDocs);
         }         
-        this.dialog = false;
+        this.addDialog = false;
     }
 
     public async displayDoc (adocument: Document): Promise<void> {
@@ -104,6 +119,32 @@ export default class DocumentsList extends Vue {
         anchor.click();
         anchor.remove();
     }
+
+
+    public openEditDialog(doc: Document): void {
+        if (this.$refs.documentDetails === undefined) { //Tofix
+            this.editDialog = true;
+            setTimeout(() => {
+            this.editDialog = false;
+            this.openEditDialog(doc);
+            }, 100);
+        }
+        else {
+            documentService.setCurrentDocument(doc);
+            this.currentDocument = doc;
+            (this.$refs.documentDetails as DocumentDetails).changingCurrentDoc();
+            this.editDialog = true;
+        }
+    }
+
+    public closeEditDialog (res?:  string): void {  
+        documentService.setCurrentDocument(null);
+        if (res) {
+            this.documents = this.documents.filter((doc) => doc.id !== res);
+        }
+        this.editDialog = false;
+    }
+
 
 }
 </script>

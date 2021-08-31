@@ -36,6 +36,28 @@ export class DocumentService {
         }
     }
 
+    public async editFilename(id: string, name: string): Promise<Document> {
+        try {
+            const doc = await this.documentsRepository.findOne(id);
+            doc.originalName = name;
+            return await this.documentsRepository.save(doc);
+        }
+        catch(_) {
+            throw _;
+        }
+    }
+
+    public async deleteADocument(id: string): Promise<Document> {
+        try {
+            const doc = await this.documentsRepository.findOne(id);
+            await this.documentStorageService.removeFile(doc.id);
+            return await this.documentsRepository.remove(doc);
+        }
+        catch(_) {
+            throw _;
+        }
+    }
+
     public async findAll(): Promise<Document[]> {
         return await this.documentsRepository.find({ order: { createdAt: 'DESC' }});
     }

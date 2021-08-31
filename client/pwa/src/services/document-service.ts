@@ -1,9 +1,22 @@
 import { config } from '../config/config';
-import { Document } from '../entites/document.entity';
+import { Document } from '../entities/document.entity';
 import axios from 'axios';
 
 
 class DocumentService {
+
+
+    private currentDocument: Document | null = null;
+
+    public async deleteDocument (id: string): Promise<Document | undefined> {
+        try {
+            const res = await axios.delete(`${config.apiUrl}/document/${id}`);
+            return res.data as Document;
+        }
+        catch (_) {
+            console.error(_);
+        }
+    }
 
     public async findAllDocuments (): Promise<Document[] | undefined> {
         try {
@@ -34,6 +47,14 @@ class DocumentService {
         catch (_) {
             console.error(_);
         }
+    }
+
+    public setCurrentDocument(doc: Document | null): void {
+        this.currentDocument = doc;
+    }
+
+    public getCurrentDocument(): Document | null {
+        return this.currentDocument;
     }
 }
 
