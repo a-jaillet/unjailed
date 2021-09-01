@@ -4,7 +4,6 @@ import { Document } from './document.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { DocumentStorageService } from './document-storage.service';
 import { PassThrough } from 'stream';
-import { Public } from '../decorator/jwt-public.decorator';
 
 @Controller('document')
 export class DocumentController {

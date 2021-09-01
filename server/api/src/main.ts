@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-var cors = require('cors');
-var helmet = require('helmet');
-var csurf = require('csurf');
+import * as cors from 'cors';
+import * as helmet from 'helmet';
+//var csurf = require('csurf');
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
