@@ -1,4 +1,5 @@
 import { config } from '@/config/config';
+import { User } from '@/entities/user.entity';
 import router from '@/router';
 import axios from 'axios';
 import { Subject } from 'rxjs';
@@ -8,8 +9,8 @@ import VueJwtDecode from "vue-jwt-decode";
 class AuthService {
 
     private jwtToken: string | null = null;
-    private user: any = null;
-    public userSubject: Subject<any> = new Subject();
+    private user: User | null = null;
+    public userSubject: Subject<User | null> = new Subject();
 
     public emitUser(): void {
         this.userSubject.next(this.user);

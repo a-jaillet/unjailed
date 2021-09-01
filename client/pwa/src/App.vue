@@ -26,13 +26,14 @@
 import Vue from 'vue';
 import Component from "vue-class-component";
 import authService from './services/auth-service';
+import { User } from './entities/user.entity';
 
 @Component({
   name: 'App',
 })
 export default class App extends Vue {
 
-  public user: any = null;
+  public user: User | null = null;
 
   constructor () {
     super();
@@ -41,7 +42,7 @@ export default class App extends Vue {
     });
   }
 
-  public loginLogout () {
+  public loginLogout (): void  {
     authService.logout();
   }
 }
