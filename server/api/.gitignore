@@ -4,6 +4,7 @@
 /tmp
 /files
 /config
+/src/config
 
 # Logs
 logs
